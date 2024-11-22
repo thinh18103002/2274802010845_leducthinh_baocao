@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng - Mini Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+    <!-- Thanh điều hướng -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" />
+            </a>
+        </div>
+        <nav class="navbar">
+            <ul class="menu">
+                <li><a href="{{ url_for('product_list') }}">New & Featured</a></li>
+                <li><a href="{{ url_for('product_list') }}">Men</a></li>
+             
+            </ul>
+            <div class="search-cart">
+                <input type="text" placeholder="Search" class="search-input" />
+                <button class="search-button">🔍</button>
+                <a href="{{ url_for('cart') }}" class="cart-icon">🛒</a>
+                
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}">
+                    <img src="{{ url_for('static', filename='images/user_icon.png') }}" class="dashboard" style="width: 24px; height: 24px;">
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="cart">
+        <h1>Giỏ hàng của bạn</h1>
+        {% if cart %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Tổng</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td class="cart-item">
+                                <img src="{{ url_for('static', filename=item['image'].split('static/')[-1]) }}" alt="{{ item['name'] }}" />
+                                <div class="cart-item-info">
+                                    <p><strong>{{ item['name'] }}</strong></p>
+                                    <p>Loại: {{ item['type'] }}</p>
+                                    <p>Màu sắc: {{ item['color'] }}</p>
+                                </div>
+                            </td>
+                            <td>{{ item['price'] }} VND</td>
+                            <td>1</td>
+                            <td>{{ item['price'] }} VND</td>
+                            <td><a href="{{ url_for('remove_from_cart', product_id=item['id']) }}">Xóa</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- Thay đổi nút Thanh toán để chuyển sang trang thanh toán -->
+            <div class="cart-summary">
+                <p><strong>Tổng cộng:</strong> {{ "{:,.0f}".format(total) }} VND</p>
+                <a href="{{ url_for('checkout') }}" class="checkout-button">Thanh toán</a>
+            </div>
+        {% else %}
+            <p>Giỏ hàng của bạn đang trống.</p>
+        {% endif %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2024 Mini Store. Đã đăng ký bản quyền.</p>
+        </div>
+    </footer>
+</body>
+</html>

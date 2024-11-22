@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh Toán - Mini Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='checkout.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" />
+            </a>
+        </div>
+        <nav class="navbar">
+            <ul class="menu">
+                <li><a href="{{ url_for('new_products') }}">New & Featured</a></li>
+                <li><a href="{{ url_for('men_products') }}">Men</a></li>
+            
+            </ul>
+            <div class="search-cart">
+                <input type="text" placeholder="Search" class="search-input" />
+                <button class="search-button">🔍</button>
+                <a href="{{ url_for('cart') }}" class="cart-icon">🛒</a>
+               
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}">
+                    <img src="{{ url_for('static', filename='images/user_icon.png') }}" class="dashboard" style="width: 24px; height: 24px;">
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="checkout-container">
+        <section class="checkout-details">
+            <h1>Thông tin thanh toán</h1>
+            {% if cart %}
+                <table class="checkout-table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart %}
+                            <tr>
+                                <td class="checkout-item">
+                                    <img src="{{ url_for('static', filename=item['image'].split('static/')[-1]) }}" alt="{{ item['name'] }}" />
+                                    <div class="checkout-item-info">
+                                        <p><strong>{{ item['name'] }}</strong></p>
+                                    </div>
+                                </td>
+                                <td>{{ item['price'] }} VND</td>
+                                <td>1</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Giỏ hàng của bạn đang trống.</p>
+            {% endif %}
+        </section>
+
+        <aside class="checkout-summary">
+            <h2>Order Summary</h2>
+            <p><strong>Subtotal:</strong> {{ "{:,.0f}".format(total) }} VND</p>
+            <p><strong>Estimated Delivery & Handling:</strong> Free</p>
+            <p><strong>Total:</strong> {{ "{:,.0f}".format(total) }} VND</p>
+            <a href="{{ url_for('guest_checkout') }}" class="btn btn-primary">
+                <button class="checkout-button">Xác nhận thanh toán</button>
+            </a> 
+        
+        </aside>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2024 Mini Store. Đã đăng ký bản quyền.</p>
+        </div>
+    </footer>
+</body>
+</html>
